@@ -1,0 +1,38 @@
+apiVersion: core.oam.dev/v1alpha2
+kind: ApplicationConfiguration
+metadata:
+  name: demo-2
+spec:
+  components:
+  - componentName: component-example
+---
+apiVersion: core.oam.dev/v1alpha2
+kind: Component
+metadata:
+  name: component-example
+spec:
+  workload:
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.oam.dev/component: express-server
+    spec:
+      selector:
+        matchLabels:
+          app.oam.dev/component: express-server
+      template:
+        metadata:
+          labels:
+            app.oam.dev/component: express-server
+        spec:
+          containers:
+          - image: crccheck/hello-world
+            name: express-server
+            ports:
+            - containerPort: 8000
+  # parameters:
+  # - name: server-image
+  #   required: true
+  #   fieldPaths:
+  #   - ".spec.containers[0].image"

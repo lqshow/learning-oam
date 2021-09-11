@@ -1,0 +1,22 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: jupyter
+spec:
+  components:
+    - name: jupyter-comp
+      type: webservice
+      properties:
+        image: docker-reg.basebit.me:5000/base/enigma2-vnc-jupyter:1.6.1
+        port: 6901
+        env:
+          - name: JUPYTER_WORK_DIR
+            value: /enigma
+          - name: JUPYTER_PIP_URL
+            value: https://mirrors.xdp.com/pypi/simple/
+      traits:
+        - type: ingress
+          properties:
+            domain: jupyter.oam.test.yifang.dev.curisinsight.com
+            http:
+              "/": 6901

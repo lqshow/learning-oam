@@ -1,0 +1,22 @@
+apiVersion: core.oam.dev/v1alpha1
+kind: Trait
+metadata:
+  name: volume-mounter
+spec:
+  appliesTo:
+    - core.oam.dev/v1alpha1.Server
+    - core.oam.dev/v1alpha1.SingletonServer
+    - core.oam.dev/v1alpha1.Worker
+    - core.oam.dev/v1alpha1.SingletonWorker
+    - core.oam.dev/v1alpha1.Task
+    - core.oam.dev/v1alpha1.SingletonTask
+  properties:
+    - name: volumeName
+      description: The name of the volume this backs. This matches the volume name declared in the ComponentSchematic.
+      type: string
+      required: true
+    - name: storageClass
+      description: The storage class that a PVC requires
+      type: string
+      required: true
+---

@@ -1,0 +1,270 @@
+{
+    "apiVersion": "apiextensions.k8s.io/v1",
+    "kind": "CustomResourceDefinition",
+    "metadata": {
+        "annotations": {
+            "controller-gen.kubebuilder.io/version": "v0.2.4"
+        },
+        "creationTimestamp": "2021-07-25T12:36:23Z",
+        "generation": 1,
+        "managedFields": [
+            {
+                "apiVersion": "apiextensions.k8s.io/v1",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                    "f:metadata": {
+                        "f:annotations": {
+                            ".": {},
+                            "f:controller-gen.kubebuilder.io/version": {}
+                        }
+                    },
+                    "f:spec": {
+                        "f:conversion": {
+                            ".": {},
+                            "f:strategy": {}
+                        },
+                        "f:group": {},
+                        "f:names": {
+                            "f:categories": {},
+                            "f:kind": {},
+                            "f:listKind": {},
+                            "f:plural": {},
+                            "f:shortNames": {},
+                            "f:singular": {}
+                        },
+                        "f:scope": {},
+                        "f:versions": {}
+                    },
+                    "f:status": {
+                        "f:storedVersions": {}
+                    }
+                },
+                "manager": "Go-http-client",
+                "operation": "Update",
+                "time": "2021-07-25T12:36:23Z"
+            },
+            {
+                "apiVersion": "apiextensions.k8s.io/v1",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                    "f:status": {
+                        "f:acceptedNames": {
+                            "f:categories": {},
+                            "f:kind": {},
+                            "f:listKind": {},
+                            "f:plural": {},
+                            "f:shortNames": {},
+                            "f:singular": {}
+                        },
+                        "f:conditions": {}
+                    }
+                },
+                "manager": "kube-apiserver",
+                "operation": "Update",
+                "time": "2021-07-25T12:36:23Z"
+            }
+        ],
+        "name": "scopedefinitions.core.oam.dev",
+        "resourceVersion": "54853144",
+        "selfLink": "/apis/apiextensions.k8s.io/v1/customresourcedefinitions/scopedefinitions.core.oam.dev",
+        "uid": "366019fc-ee38-4e12-a5a2-3149de914bad"
+    },
+    "spec": {
+        "conversion": {
+            "strategy": "None"
+        },
+        "group": "core.oam.dev",
+        "names": {
+            "categories": [
+                "oam"
+            ],
+            "kind": "ScopeDefinition",
+            "listKind": "ScopeDefinitionList",
+            "plural": "scopedefinitions",
+            "shortNames": [
+                "scope"
+            ],
+            "singular": "scopedefinition"
+        },
+        "scope": "Namespaced",
+        "versions": [
+            {
+                "additionalPrinterColumns": [
+                    {
+                        "jsonPath": ".spec.definitionRef.name",
+                        "name": "DEFINITION-NAME",
+                        "type": "string"
+                    }
+                ],
+                "name": "v1alpha2",
+                "schema": {
+                    "openAPIV3Schema": {
+                        "description": "A ScopeDefinition registers a kind of Kubernetes custom resource as a valid OAM scope kind by referencing its CustomResourceDefinition. The CRD is used to validate the schema of the scope when it is embedded in an OAM ApplicationConfiguration.",
+                        "properties": {
+                            "apiVersion": {
+                                "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                                "type": "string"
+                            },
+                            "kind": {
+                                "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                                "type": "string"
+                            },
+                            "metadata": {
+                                "type": "object"
+                            },
+                            "spec": {
+                                "description": "A ScopeDefinitionSpec defines the desired state of a ScopeDefinition.",
+                                "properties": {
+                                    "allowComponentOverlap": {
+                                        "description": "AllowComponentOverlap specifies whether an OAM component may exist in multiple instances of this kind of scope.",
+                                        "type": "boolean"
+                                    },
+                                    "definitionRef": {
+                                        "description": "Reference to the CustomResourceDefinition that defines this scope kind.",
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the referenced CustomResourceDefinition.",
+                                                "type": "string"
+                                            },
+                                            "version": {
+                                                "description": "Version indicate which version should be used if CRD has multiple versions by default it will use the first one if not specified",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "extension": {
+                                        "description": "Extension is used for extension needs by OAM platform builders",
+                                        "type": "object",
+                                        "x-kubernetes-preserve-unknown-fields": true
+                                    },
+                                    "workloadRefsPath": {
+                                        "description": "WorkloadRefsPath indicates if/where a scope accepts workloadRef objects",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "allowComponentOverlap",
+                                    "definitionRef"
+                                ],
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "served": true,
+                "storage": false,
+                "subresources": {}
+            },
+            {
+                "additionalPrinterColumns": [
+                    {
+                        "jsonPath": ".spec.definitionRef.name",
+                        "name": "DEFINITION-NAME",
+                        "type": "string"
+                    }
+                ],
+                "name": "v1beta1",
+                "schema": {
+                    "openAPIV3Schema": {
+                        "description": "A ScopeDefinition registers a kind of Kubernetes custom resource as a valid OAM scope kind by referencing its CustomResourceDefinition. The CRD is used to validate the schema of the scope when it is embedded in an OAM ApplicationConfiguration.",
+                        "properties": {
+                            "apiVersion": {
+                                "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                                "type": "string"
+                            },
+                            "kind": {
+                                "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                                "type": "string"
+                            },
+                            "metadata": {
+                                "type": "object"
+                            },
+                            "spec": {
+                                "description": "A ScopeDefinitionSpec defines the desired state of a ScopeDefinition.",
+                                "properties": {
+                                    "allowComponentOverlap": {
+                                        "description": "AllowComponentOverlap specifies whether an OAM component may exist in multiple instances of this kind of scope.",
+                                        "type": "boolean"
+                                    },
+                                    "definitionRef": {
+                                        "description": "Reference to the CustomResourceDefinition that defines this scope kind.",
+                                        "properties": {
+                                            "name": {
+                                                "description": "Name of the referenced CustomResourceDefinition.",
+                                                "type": "string"
+                                            },
+                                            "version": {
+                                                "description": "Version indicate which version should be used if CRD has multiple versions by default it will use the first one if not specified",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "extension": {
+                                        "description": "Extension is used for extension needs by OAM platform builders",
+                                        "type": "object",
+                                        "x-kubernetes-preserve-unknown-fields": true
+                                    },
+                                    "workloadRefsPath": {
+                                        "description": "WorkloadRefsPath indicates if/where a scope accepts workloadRef objects",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "allowComponentOverlap",
+                                    "definitionRef"
+                                ],
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "served": true,
+                "storage": true,
+                "subresources": {}
+            }
+        ]
+    },
+    "status": {
+        "acceptedNames": {
+            "categories": [
+                "oam"
+            ],
+            "kind": "ScopeDefinition",
+            "listKind": "ScopeDefinitionList",
+            "plural": "scopedefinitions",
+            "shortNames": [
+                "scope"
+            ],
+            "singular": "scopedefinition"
+        },
+        "conditions": [
+            {
+                "lastTransitionTime": "2021-07-25T12:36:23Z",
+                "message": "no conflicts found",
+                "reason": "NoConflicts",
+                "status": "True",
+                "type": "NamesAccepted"
+            },
+            {
+                "lastTransitionTime": "2021-07-25T12:36:23Z",
+                "message": "the initial names have been accepted",
+                "reason": "InitialNamesAccepted",
+                "status": "True",
+                "type": "Established"
+            }
+        ],
+        "storedVersions": [
+            "v1beta1"
+        ]
+    }
+}

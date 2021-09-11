@@ -1,39 +1,10 @@
-[TOC]
+[[_TOC_]]
 
 # Overview
 
 `OAM` 是 “以应用为中心” 的上层抽象，一个用来构建云原生应用管理平台的标准规范与核心框架。
 
 尽管 `OAM` 的设计是与平台无关的，但是天生对 `Kubernetes` 平台更友好些。
-
-```mermaid
-graph TD
-    classDef runtime fill:#fff,stroke-dasharray: 2 2;
-    OAM[Open Application Model]
-
-    subgraph edge-platform [边缘计算节点]
-    edge([OAM Runtime])
-    end
-
-    subgraph IoT-platform [IoT]
-    IoT([OAM Runtime])
-    end
-
-    subgraph cloud-provider [公有云]
-    public-cloud([OAM Runtime])
-    end
-
-    subgraph on-prem-cluster [On-Premises cluster]
-    on-prem([OAM Runtime])
-    end
-
-    subgraph sc [Supercomputer]
-    supercomputer([OAM Runtime])
-    end
-
-    OAM -.-> edge & IoT & public-cloud & on-prem & supercomputer
-    class edge-platform,IoT-platform,on-prem-cluster,cloud-provider,sc runtime
-```
 
 ## OAM 项目产生的背景
 
@@ -125,7 +96,75 @@ graph TD
 1. `OAM` 的第一个设计目标就是补充 `应用` 这一概念，建立对应用和它所需的运维能力定义与描述的标准规范。
 2. `OAM` 的第二个设计目标就是提供更高层级的应用层抽象和以应关注点分离的定义模型(基础架构与开发者的分离)。
 
+
+## 特点
+
+### 1. 关注点分离
+
+| 模块      | 关注对象   | 职责                                   |
+| --------- | ---------- | -------------------------------------- |
+| Workload  | 平台提供方 | 提供不同的 `Workload` 类型供开发者使用 |
+| Component | 应用开发者 | 负责应用组件 `Component` 的定义        |
+| Trait     | 基础设施运维 |                                        |
+
+### 2. 平台无关、运行时无关
+
+`OAM` 应用定义并不限定你底层的平台和实际运行时，你完全可以运行在 K8s 以外的平台，也不存在厂商锁定的问题。
+
+只要描述统一的应用配置，便可以在不同的环境达到一致的应用体验。
+
+```mermaid
+graph TD
+    classDef runtime fill:#fff,stroke-dasharray: 2 2;
+    OAM[Open Application Model]
+
+    subgraph edge-platform [边缘计算节点]
+    edge([OAM Runtime])
+    end
+
+    subgraph IoT-platform [IoT]
+    IoT([OAM Runtime])
+    end
+
+    subgraph cloud-provider [公有云]
+    public-cloud([OAM Runtime])
+    end
+
+    subgraph on-prem-cluster [On-Premises cluster]
+    on-prem([OAM Runtime])
+    end
+
+    subgraph sc [Supercomputer]
+    supercomputer([OAM Runtime])
+    end
+
+    OAM -.-> edge & IoT & public-cloud & on-prem & supercomputer
+    class edge-platform,IoT-platform,on-prem-cluster,cloud-provider,sc runtime
+```
+
+### 3. 模块化应用部署和运维特征
+
+## 平台实现
+
+### 原有平台改造为 OAM 模型实现需要做什么？
+
+对于原先是 K8s 上的应用管理平台，接入改造为 OAM 实现可以分为两个阶段
+
+1. 实现 OAM ApplicationConfiguration Controller（简称AppConfig Controller），这个 Controller 同时包含 OAM 的 Component、WorkloadDefinition、TraitDefinition、ScopeDefinition 等 CRD。AppConfig Controller 根据 OAM AppConfig中的描述，拉起原有平台的 CRD Operator
+2. 逐渐将原先的 `CRD Operator`  根据关注点分离的思想，分为 Workload 和 Trait。同时接入和复用 OAM 社区中更多的Workload、Trait，丰富更多场景下的功能。
+
+### 现有的 CRD Operator 为接入 OAM 需要做什么改变？
+
+现有的 **CRD Operator** 功能上可以平滑接入 OAM 体系，比如作为一个独立扩展 Workload 接入。
+
+但是为了更好的让终端用户体会到 OAM 关注点分离的好处，我们强烈建议 CRD Operator 根据研发和运维不同的关注点分离为不同的 CRD。
+
+- 研发关注的 CRD 作为 Workload 接入 OAM
+- 运维关注的 CRD 作为 Trait 接入 OAM。
+
 ## References
 
 - [OAM 系列文章](https://github.com/cloudnativeto/sig-oam/blob/main/docs/articles.md)
 - [OAM 系列视频](https://github.com/cloudnativeto/sig-oam/blob/main/docs/video.md)
+- [一些 PDF 资料](./99-resources/)
+- [如何在 20 分钟内给你的 K8s PaaS 上线一个新功能](https://github.com/oam-dev/kubevela.io/blob/main/i18n/zh/docusaurus-plugin-content-blog/2020-12-14-extend-kubevela-by-cuelang-in-20-mins.md)
