@@ -9,10 +9,14 @@
 等组合到一起形成一个完整的应用配置。
 
 
-`ApplicationConfiguration`  面向应用维度绑定 `运维特征` 和 `组件`
+`ApplicationConfiguration`  面向应用维度绑定 `运维特征` 和 `组件`，就像是一个信封，将 `Traits` 绑定给 `Component`，这个是显式绑定的。
 
+`OAM` 里面不建议去使用 `Label` 这样的松耦合的方式去关联你的工作负载。
 
-```mermaid
+<details>
+<summary>mermaid code</summary>
+
+```
 flowchart LR
 	classDef runtime fill:#fff,color:#fff,stroke-dasharray: 2 2;
 	
@@ -53,3 +57,9 @@ flowchart LR
 	
 	app -- Deploy --> platform
 ```
+
+</details>
+
+## TBD
+
+有了 `application` 后，确认下 `ApplicationConfiguration` 这个配置是否还有必要使用？

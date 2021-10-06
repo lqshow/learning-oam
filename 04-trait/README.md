@@ -1,8 +1,17 @@
 # Overview
 
-> 运维特征
+> 应用特征
 
-```mermaid
+运维侧的概念，比如扩容策略，发布策略，这些策略通过一个叫做 `Traits` 的 API 暴露给用户。
+
+我们需要将 `Traits` 应用特征关联到应用组件 `Components` 上。
+
+任何管理和运维 Workload 的组件和能力，都可以定义为一个 `Trait`。
+
+<details>
+<summary>mermaid code</summary>
+
+```
 flowchart LR
 	classDef runtime fill:#fff,color:#fff,stroke-dasharray: 2 2;
 	
@@ -31,10 +40,9 @@ flowchart LR
 	trait -- ApplicationConfiguration --> component
 	app -- Deploy --> platform
 ```
-
+</details>
 
 ## 统一用 TraitDefinition 定义 Trait
-
 
 ```yaml
 apiVersion: core.oam.dev/v1alpha2

@@ -1,5 +1,3 @@
-[[_TOC_]]
-
 # Overview
 
 为了利于 `Kubernetes` 生态内的 `CRD` 接入， 新版 OAM Spec(v0.3.0) `v1alpha2`  中彻底统一调整为引用数据模型，通过在 `XXX`Definition 的定义里，描述了一个引用的关系。
@@ -87,3 +85,8 @@ scopedefinitions.core.oam.dev                       2021-07-25T12:36:23Z
 ```
 
 </details>
+
+
+## References
+
+- [CRD](../01-CRD/README.md)

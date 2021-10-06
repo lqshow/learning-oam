@@ -8,6 +8,195 @@ CUE 延续了 JSON 超集的思路，额外提供了丰富的类型、表达式�
 
 在将 CUE 格式的 Template 嵌入 Kubernetes 的 YAML 中时，我们需要将 CUE 转换成为字符串格式，这使得 Definition 在原生 Kubernetes 工具 kubectl 中的使用变得较为复杂。
 
+## 安装
+
+```bash
+brew install cuelang/tap/cue
+```
+
+```bash
+go get -u cuelang.org/go/cmd/cue
+```
+
+## Command
+
+### 语法检查
+
+```bash
+# validate data
+cue vet example.cue
+```
+
+```bash
+# formats CUE configuration files
+cue fmt example.cue
+```
+
+### 输出
+
+标准输出
+```bash
+# 标准输出
+cue export example.cue
+```
+
+<details>
+<summary>output</summary>
+
+```json
+{
+    "output": {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "spec": {
+            "selector": {
+                "matchLabels": {
+                    "app.oam.dev/component": "test",
+                    "app": "test"
+                }
+            },
+            "template": {
+                "metadata": {
+                    "labels": {
+                        "app.oam.dev/component": "test",
+                        "app": "test"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "test",
+                            "image": "test",
+                            "command": [
+                                "nginx"
+                            ],
+                            "ports": [
+                                {
+                                    "containerPort": 80
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "parameter": {
+        "image": "test",
+        "cmd": [
+            "nginx"
+        ],
+        "port": 80
+    },
+    "context": {
+        "name": "test"
+    }
+}
+```
+
+</details>
+
+指定参数输出
+
+```bash
+# 指定参数输出
+cue export example.cue -e output
+```
+
+<details>
+<summary>output</summary>
+
+```json
+{
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "spec": {
+        "selector": {
+            "matchLabels": {
+                "app.oam.dev/component": "test",
+                "app": "test"
+            }
+        },
+        "template": {
+            "metadata": {
+                "labels": {
+                    "app.oam.dev/component": "test",
+                    "app": "test"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "name": "test",
+                        "image": "test",
+                        "command": [
+                            "nginx"
+                        ],
+                        "ports": [
+                            {
+                                "containerPort": 80
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
+```
+
+</details>
+
+指定参数输出 YAML 文件
+
+```bash
+# 指定参数输出 YAML 文件
+cue export example.cue --out yaml
+```
+
+<details>
+<summary>output</summary>
+
+```yaml
+output:
+  apiVersion: apps/v1
+  kind: Deployment
+  spec:
+    selector:
+      matchLabels:
+        app.oam.dev/component: test
+        app: test
+    template:
+      metadata:
+        labels:
+          app.oam.dev/component: test
+          app: test
+      spec:
+        containers:
+        - name: test
+          image: test
+          command:
+          - nginx
+          ports:
+          - containerPort: 80
+parameter:
+  image: test
+  cmd:
+  - nginx
+  port: 80
+context:
+  name: test
+```
+
+</details>
+
+
+yaml 文件转换为 cue 文件
+
+```bash
+# yaml 文件转换为 cue 文件
+cue import example-02.yaml
+```
 
 ## Kubevela CUE
 

@@ -1,6 +1,6 @@
-[[_TOC_]]
-
 # Overview
+
+`Components` 实际上是帮助我们定义 `Deployment`、`StatefulSet` 这样的 `Workload`，暴露给用户，让用户去定义自己应用的语义。
 
 从 `Kubernetes` 的 `CRD` 来看，存在两个模块。
 
@@ -48,7 +48,7 @@ worker       Deployment      Describes long-running, scalable, containerized ser
 
 </details>
 
-# Component
+## Component
 
 当前 `v1alpha2`  版本，`Component` 是 `OAM` 中最基础的对象，该配置与基础设施无关，定义负载实例的运维特性。例如一个微服务 workload 的定义。
 
