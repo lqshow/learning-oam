@@ -1,6 +1,6 @@
 # Overview
 
-为了利于 `Kubernetes` 生态内的 `CRD` 接入， 新版 OAM Spec(v0.3.0) `v1alpha2`  中彻底统一调整为引用数据模型，通过在 `XXX`Definition 的定义里，描述了一个引用的关系。
+为了利于 `Kubernetes` 生态内的 `CRD` 接入， 新版 OAM Spec(v0.3.0) `v1alpha2`  中彻底统一调整为引用数据模型，通过在 `XXX`Definition 的定义里，描述了一个引用的关系，使用 Reference 模型定义 Workload、Trait 和 Scope。
 
 - ComponentDefinition
 - WorkloadDefinition
@@ -86,6 +86,11 @@ scopedefinitions.core.oam.dev                       2021-07-25T12:36:23Z
 
 </details>
 
+## Notes
+
+1. `ComponentDefinition` 实体已经被引入以取代以前的 `WorkloadDefinition`。它提供了 `schematic`（示意图）信息，用于描述实际的执行计划，并以底层不可知的格式公开参数。
+2. `Application` 实体 `components` 直接引用 `ComponentDefinition`, 且绑定 `traints` 以及 `scopes`
+3. 参数传递使用 `jsonPath`
 
 ## References
 

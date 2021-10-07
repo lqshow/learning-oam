@@ -22,6 +22,12 @@
 
 </details>
 
+## 命名变更
+
+| concept   | v1alpha1           | v1alpha2            |
+| --------- | ------------------ | ------------------- |
+| Component | ComponentSchematic | Component |
+
 ## ComponentDefinition
 
 存在 `v1beta1` 和 `v1alpha2`(新版本) 两个版本，正常情况下 `ComponentDefinition` 只能被同 `namespace` 下 `application` 引用，但是 `vela-system namespace` 下可以被所有 `application` 引用。

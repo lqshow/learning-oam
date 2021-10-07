@@ -1,12 +1,16 @@
 # Overview
 
-`OAM` 是 `以应用为中心` 的上层抽象，一个用来构建云原生应用管理平台的标准规范与核心框架。
+`OAM` 是 `以应用为中心` 的上层抽象，一个用来构建云原生应用管理平台的标准规范与核心框架，规范提供了一种分层的方法来描述和部署应用程序。
 
 `OAM` 是与平台无关、高可扩展的应用描述能力，是一个与运行时无关的模型，用于定义云本地应用程序。
 
 尽管 `OAM` 的设计是与平台无关的，但是天生对 `Kubernetes` 平台更友好些。
 
 ![how-it-works](99-assets/image/how-it-works.png)
+
+- 开放（Open）：支持异构的平台、容器运行时、调度系统、云供应商、硬件配置等，总之与底层无关
+- 应用（Application）：云原生应用
+- 模型（Model）：定义标准，以使其与底层平台无关
 
 ## OAM 项目产生的背景
 
@@ -101,13 +105,20 @@
 
 实现 `OAM` 核心 `Controller` 的同时，快速接入了已有的 `Operator` 能力，通过 `OAM` 横向打通多个模块，破除了原有 `Operator` 彼此孤立、无法复用的窘境。
 
-**设计目标**
+***设计目标***
 
 1. `OAM` 的第一个设计目标就是补充 `应用` 这一概念，建立对应用和它所需的运维能力定义与描述的标准规范。
 2. `OAM` 的第二个设计目标就是提供更高层级的应用层抽象和以应关注点分离的定义模型(基础架构与开发者的分离)。
 
+## OAM 设计原则
 
-## OAM 特点
+- 关注点分离：根据功能和行为来定义模型，以此划分不同角色的职责，
+- 平台中立：OAM 的实现不绑定到特定平台；
+- 优雅：尽量减少设计复杂性；
+- 复用性：可移植性好，同一个应用程序可以在不同的平台上不加改动地执行；
+- 不作为编程模型：OAM 提供的是应用程序模型，描述了应用程序的组成和组件的拓扑结构，而不关注应用程序的具体实现。
+
+## OAM 主要有三个特点
 
 ### 1. 开发和运维关注点分离
 
@@ -117,8 +128,7 @@
 | --------- | ---------- | -------------------------------------- |
 | Workload  | 平台提供方 | 提供不同的 `Workload` 类型供开发者使用 |
 | Component | 应用开发者 | 负责应用组件 `Component` 的定义        |
-| Trait     | 基础设施运维 |                                        |
-
+| Trait     | 基础设施运维 | 提供不同的运维能力                   |
 
 以下理想状态的角色分类
 
@@ -212,7 +222,17 @@ graph TD
 
 ## References
 
+***参考资料***
+
 - [OAM 系列文章](https://github.com/cloudnativeto/sig-oam/blob/main/docs/articles.md)
 - [OAM 系列视频](https://github.com/cloudnativeto/sig-oam/blob/main/docs/video.md)
 - [一些 PDF 资料](./99-assets/pdf/)
 - [如何在 20 分钟内给你的 K8s PaaS 上线一个新功能](https://github.com/oam-dev/kubevela.io/blob/main/i18n/zh/docusaurus-plugin-content-blog/2020-12-14-extend-kubevela-by-cuelang-in-20-mins.md)
+- [OAM 中文社区会议文档](https://shimo.im/docs/w8CgdyYGWjtYJ3XP)
+
+***OAM 实现***
+
+- [The Modern Application Delivery Platform(KubeVela)](https://github.com/oam-dev/kubevela/)
+- [Amazon ECS for Open Application Model(AWS 探索 OAM 落地 POC 项目)](https://github.com/awslabs/amazon-ecs-for-open-application-model)
+- [Rudr (Deprecated)](https://github.com/oam-dev/rudr/blob/master/README-old.md)
+- [OAM Kubernetes Runtime (Deprecated)](https://github.com/crossplane/oam-kubernetes-runtime)

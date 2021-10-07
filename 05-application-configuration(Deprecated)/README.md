@@ -62,4 +62,6 @@ flowchart LR
 
 ## TBD
 
+> 已被 Application 取代
+
 有了 `application` 后，确认下 `ApplicationConfiguration` 这个配置是否还有必要使用？
