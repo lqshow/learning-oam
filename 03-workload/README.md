@@ -1,15 +1,22 @@
-[[_TOC_]]
+# Overview
 
-# Workload
+应用程序可用的 `Workload` 类型是由平台提供商和基础设施运维人员提供的。`Workload` 模型参照 `Kubernetes` 规范定义，`Workload Type` 不能对终端用户(仅对平台操作人员)进行扩展
 
-应用程序可用的 `Workload` 类型是由平台提供商和基础设施运维人员提供的。`Workload` 模型参照 Kubernetes 规范定义，`Workload Type` 不能对终端用户(仅对平台操作人员)进行扩展
+`Workload` 是实际工作负载，平台方可以根据 `Workload` 规范来扩展负载类型，比如 `Containers`、`Functions`、`VirtualMachine`、`VirtualService` 等。
 
-`Workload`  是实际工作负载，平台方可以根据 Workload 规范来扩展负载类型，比如 Containers、Functions、VirtualMachine、VirtualService 等。
+`OAM` 目前定义的核心负载类型有 `ContainerizedWorkload`（与 `Kubernetes` 中的 `Pod` 定义类似，同样支持定义多个容器，但是缺少了 `Pod` 中的一些属性 ）。
 
-OAM 目前定义的核心负载类型有 ContainerizedWorkload（与 Kubernetes 中的 Pod 定义类似，同样支持定义多个容器，但是缺少了 Pod 中的一些属性 ）。
+`Workload` 是可以自行拓展的，`OAM` 也提供了一些标准的 `Workload` ，当然平台提供方可以根据自己产品的需求增加更多的 `Workload` 。
 
+## Workload Spec
+
+1. 需保持 spec.definitionRef.name 的值与 metadata.name 的值相同。
+2. 因为 definitionRef 是对相应的 Workload schema 的引用，对于 Kubernetes 平台来说，即对 CRD 的引用。
+3. 应用开发者在定义 Component 引用该 Workload 的时候需要直接实例化一个 CRD 的配置（及创建一个 CR）。
 
 ## 命名变更
+
+删除了旧的 [WorkloadType](./workload_type.deprecated.md)，新版 `v1alpha2` 中彻底改为了引用模型，通过 `WorkloadDefinition`，使用 `WorkloadDefinition` 的 `name` 表示工作负载类型
 
 | concept   | v1alpha1           | v1alpha2            |
 | --------- | ------------------ | ------------------- |
@@ -26,9 +33,84 @@ workloaddefinitions.core.oam.dev                    2021-07-25T12:36:23Z
 
 > `OAM`  将应用的工作负载（Workload）分为三种，这三者的主要区别在于一个 `OAM` 平台对于具体某一类工作负载进行实现的自由度不同。
 
-- core.oam.dev（核心型）
-- standard.oam.dev（标准型）
-- 自定义扩展型。
+- core.oam.dev（核心型 `Core Workload`）
+- standard.oam.dev（标准型 `Standard Workload`）
+- 自定义扩展型 `Extended Workload`。
+
+`OAM` 社区中目前唯一一个核心工作负载是 `ContainerizedWorkload`，它用来描述一个基于容器的工作负载，可以理解为是 `Kubernetes Deployment` 的简化版（去掉了 `PodSecurityPolicy` 等大量与业务研发无关的字段）。
+
+<details>
+	<summary>定义一个工作负载</summary>
+
+> We also recommend that the `name` of the workloadDefinition to be the same as the `name` it refers to. Here is an example
+
+```yaml
+apiVersion: core.oam.dev/v1alpha2
+kind: WorkloadDefinition
+metadata:
+  name: schema.example.oam.dev
+spec:
+  definitionRef:
+    name: schema.example.oam.dev
+```
+
+</details>
+
+<details>
+	<summary>定义一个核心工作负载</summary>
+
+```yaml
+apiVersion: core.oam.dev/v1alpha2
+kind: WorkloadDefinition
+metadata:
+  name: x.core.oam.dev
+spec:
+  definitionRef:
+    name: x.core.oam.dev
+```
+
+```yaml
+ apiVersion: core.oam.dev/v1alpha2
+ kind: WorkloadDefinition
+ metadata:
+   name: Server # workload type
+ spec:
+   definitionRef:
+     # Name of CRD.
+     name: containerizedworkloads.core.oam.dev # workload schema
+```
+
+</details>
+
+<details>
+	<summary>定义一个标准工作负载</summary>
+
+```yaml
+ apiVersion: core.oam.dev/v1alpha2
+ kind: WorkloadDefinition
+ metadata:
+   name: WebService # workload type
+ spec:
+   definitionRef:
+     name: podspecworkloads.standard.oam.dev # workload schema
+```
+
+</details>
+
+<details>
+	<summary>定义一个扩展的工作负载</summary>
+
+```yaml
+apiVersion: core.oam.dev/v1alpha2
+kind: WorkloadDefinition
+metadata:
+  name: redis.cache.aliyun.com
+spec:
+  definitionRef:
+    name: redis.cache.aliyun.com
+```
+
+</details>
 
 ## 定义
 
@@ -42,8 +124,8 @@ metadata:
     meta.helm.sh/release-namespace: vela-system
   labels:
     app.kubernetes.io/managed-by: Helm
+  # must be the same with apiGroup + Kind in the component, as well as the definitionRef.name below.
   name: containerizedworkloads.core.oam.dev
-  namespace: vela-system
 spec:
   childResourceKinds:
   - apiVersion: apps/v1
@@ -259,6 +341,7 @@ metadata:
   name: server
 spec:
   definitionRef:
+    # the reference of schema for this workload type. In Kubernetes it should be a full name of API resource
     name: containerizedworkloads.core.oam.dev
 EOF
 ```
