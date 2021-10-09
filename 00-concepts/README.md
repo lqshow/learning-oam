@@ -9,10 +9,6 @@
 
 `OAM` 几个核心概念的模型定义都是支持可扩展的，平台方可以根据自己的业务需求按需定义，然后通过应用关系进行扩展
 
-**举个例子**
-
-[以 Scope 为例子](#scope)
-
 **基于 `Kubernetes` 平台实现的 OAM Runtime**
 
 > 需要说明的是以上 `XXX`Definition 在 `Kubernetes` 世界里其实都是 `Custom Resource`（自定义资源），也就是 CR。
@@ -85,6 +81,146 @@ scopedefinitions.core.oam.dev                       2021-07-25T12:36:23Z
 ```
 
 </details>
+
+## 应用部署流程
+
+### 1. 先定义 `ComponentDefinition`
+
+> 在 k8s 平台的实现中，首先需要事先定义一个叫 `componentdefinitions.core.oam.dev` 的 CRD。
+
+平台先定义一批 `ComponentDefinition`，每个  `ComponentDefinition` 的 `schematic` 会有具体的 Spec，  `schematic` 目前用于比较多的是基于`CUE`的组件定义。
+
+<details>
+	<summary>下面是一个完整的基于CUE的组件定义示例:</summary>
+
+`spec.workload.definition`  和  `spec.workload.type` 互斥，只能二选一作为一个定义
+
+```yaml
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: webserver
+  annotations:
+    definition.oam.dev/description: "webserver is a combo of Deployment + Service"
+spec:
+  workload:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+  schematic:
+    cue:
+      template: |
+        output: {
+            apiVersion: "apps/v1"
+            kind:       "Deployment"
+            spec: {
+                selector: matchLabels: {
+                    "app.oam.dev/component": context.name
+                }
+                template: {
+                    metadata: labels: {
+                        "app.oam.dev/component": context.name
+                    }
+                    spec: {
+                        containers: [{
+                            name:  context.name
+                            image: parameter.image
+
+                            if parameter["cmd"] != _|_ {
+                                command: parameter.cmd
+                            }
+
+                            if parameter["env"] != _|_ {
+                                env: parameter.env
+                            }
+
+                            if context["config"] != _|_ {
+                                env: context.config
+                            }
+
+                            ports: [{
+                                containerPort: parameter.port
+                            }]
+
+                            if parameter["cpu"] != _|_ {
+                                resources: {
+                                    limits:
+                                        cpu: parameter.cpu
+                                    requests:
+                                        cpu: parameter.cpu
+                                }
+                            }
+                        }]
+                }
+                }
+            }
+        }
+        // an extra template
+        outputs: service: {
+            apiVersion: "v1"
+            kind:       "Service"
+            spec: {
+                selector: {
+                    "app.oam.dev/component": context.name
+                }
+                ports: [
+                    {
+                        port:       parameter.port
+                        targetPort: parameter.port
+                    },
+                ]
+            }
+        }
+        parameter: {
+            image: string
+            cmd?: [...string]
+            port: *80 | int
+            env?: [...{
+                name:   string
+                value?: string
+                valueFrom?: {
+                    secretKeyRef: {
+                        name: string
+                        key:  string
+                    }
+                }
+            }]
+            cpu?: string
+        }
+```
+</details>
+
+然后将以上的 `ComponentDefinition` CR 安装到平台集群内。
+
+### 2. 再定义 `Application`
+
+应用开发者选择适合自己应用的一个 `Component`，填充具体的参数(`properties` 对象针对 `component parameters`)，即可以将应用拉起来
+
+<details>
+	<summary>应用程序中部署该组件</summary>
+
+.spec.components[0].type 的值为 `webserver` 为第一步 `ComponentDefinition` 的定义名称
+
+```yaml
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: webserver-demo
+spec:
+  components:
+    - name: hello-world             # instance name
+      type: webserver               # reference to the component definition
+      properties:                   # parameter values
+        image: crccheck/hello-world
+        port: 8000
+        env:
+        - name: "foo"
+          value: "bar"
+        cpu: "100m"
+```
+</details>
+
+然后将以上 `Application` CR 安装到平台集群内，一个应用就生成了。
 
 ## Notes
 
